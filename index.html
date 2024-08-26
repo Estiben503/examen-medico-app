@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesador de Exámenes Médicos</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        textarea { width: 100%; height: 200px; margin-bottom: 10px; }
+        button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Procesador de Exámenes Médicos</h1>
+    <textarea id="inputText" placeholder="Pegue aquí el texto del examen..."></textarea>
+    <button onclick="processExam()">Procesar Examen</button>
+    <div id="results"></div>
+
+    <script>
+        function processExam() {
+            const text = document.getElementById('inputText').value;
+            const results = {};
+            const parameters = {
+                'Hemoglobina': /hemoglobina[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Plaquetas': /plaquetas[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Glóbulos Blancos': /gl[óo]bulos blancos[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Neutrófilos': /neutr[óo]filos[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Linfocitos': /linfocitos[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Monocitos': /monocitos[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Eosinófilos': /eosin[óo]filos[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Sodio': /sodio[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Potasio': /potasio[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Cloro': /cloro[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Creatinina': /creatinina[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Urea': /urea[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'ALT': /alt[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'AST': /ast[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Colesterol Total': /colesterol total[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'HDL': /hdl[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'LDL': /ldl[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Triglicéridos': /triglic[ée]ridos[:\s]+(\d+(?:[.,]\d+)?)/i,
+                'Glucosa': /glucosa[:\s]+(\d+(?:[.,]\d+)?)/i
+            };
+
+            for (const [key, pattern] of Object.entries(parameters)) {
+                const match = text.match(pattern);
+                if (match) {
+                    results[key] = match[1].replace(',', '.');
+                }
+            }
+
+            displayResults(results);
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            if (Object.keys(results).length === 0) {
+                resultsDiv.innerHTML = '<p>No se encontraron resultados. Verifica el texto ingresado.</p>';
+            } else {
+                let html = '<h2>Resultados procesados:</h2><ul>';
+                for (const [key, value] of Object.entries(results)) {
+                    html += `<li><strong>${key}:</strong> ${value}</li>`;
+                }
+                html += '</ul>';
+                resultsDiv.innerHTML = html;
+            }
+        }
+    </script>
+</body>
+</html>
